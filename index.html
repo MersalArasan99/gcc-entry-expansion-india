@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GCC Compass</title>
+  <meta name="description" content="Compare Indian cities and state incentives for a new Global Capability Centre, with the source behind every number.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to results</a>
+
+  <header class="masthead">
+    <div class="wrap masthead-row">
+      <p class="wordmark">GCC Compass</p>
+      <p class="masthead-note">A working prototype for Flexiple's Product Intern assignment. Not an official Flexiple product. Data as of <span id="asof"></span>.</p>
+    </div>
+  </header>
+
+  <section class="intro wrap">
+    <h1>Where should your India centre go?</h1>
+    <p class="lede">Describe the team you plan to build. GCC Compass compares six cities on pay, rent, state incentives and peers, and links every number to the page it came from.</p>
+  </section>
+
+  <div class="wrap layout">
+    <aside class="controls" aria-label="Your centre">
+      <form id="form" autocomplete="off">
+        <h2 class="controls-title">Your centre</h2>
+
+        <label class="field">
+          <span class="field-label">Sector</span>
+          <select id="sector" name="sector"></select>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Team size <output id="sizeOut" for="size"></output></span>
+          <input type="range" id="size" name="size" min="10" max="1500" step="10" value="200">
+          <span class="field-hint">Headcount you expect to reach in the first two to three years.</span>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Senior share <output id="seniorOut" for="senior"></output></span>
+          <input type="range" id="senior" name="senior" min="0" max="80" step="5" value="30">
+          <span class="field-hint">People with 6+ years' experience. Changes pay, and which roles qualify for salary-linked incentives.</span>
+        </label>
+
+        <fieldset class="field">
+          <legend class="field-label">What matters most</legend>
+          <div class="segmented" role="radiogroup">
+            <label><input type="radio" name="priority" value="cost" checked><span>Lowest cost</span></label>
+            <label><input type="radio" name="priority" value="talent"><span>Deepest talent</span></label>
+            <label><input type="radio" name="priority" value="speed"><span>Fastest start</span></label>
+          </div>
+        </fieldset>
+
+        <label class="check">
+          <input type="checkbox" id="forbes" name="forbes">
+          <span>Our parent company is on the Forbes Global 2000 or Fortune 1000</span>
+        </label>
+
+        <details class="more">
+          <summary>Office assumption</summary>
+          <label class="field">
+            <span class="field-label">Space per person <output id="sqftOut" for="sqft"></output></span>
+            <input type="range" id="sqft" name="sqft" min="50" max="150" step="5" value="60">
+            <span class="field-hint">Default 60 sq ft is the norm Gujarat's GCC policy uses per employee. Many fit-outs plan 80–100.</span>
+          </label>
+        </details>
+      </form>
+    </aside>
+
+    <main id="main" class="results">
+      <nav class="tabs" role="tablist" aria-label="Views">
+        <button role="tab" id="tab-cities" aria-controls="panel-cities" aria-selected="true">Cities</button>
+        <button role="tab" id="tab-incentives" aria-controls="panel-incentives" aria-selected="false" tabindex="-1">Incentives</button>
+        <button role="tab" id="tab-pipeline" aria-controls="panel-pipeline" aria-selected="false" tabindex="-1">Who's coming</button>
+        <button role="tab" id="tab-providers" aria-controls="panel-providers" aria-selected="false" tabindex="-1">Providers</button>
+        <button role="tab" id="tab-about" aria-controls="panel-about" aria-selected="false" tabindex="-1">About the data</button>
+      </nav>
+
+      <section role="tabpanel" id="panel-cities" aria-labelledby="tab-cities" class="panel">
+        <p class="verdict" id="verdict" aria-live="polite"></p>
+        <ul class="legend" id="legend" aria-label="What each colour in the bars means"></ul>
+        <ol class="ranking" id="ranking"></ol>
+        <details class="method">
+          <summary>How the ranking works</summary>
+          <div id="method"></div>
+        </details>
+        <div class="cta">
+          <p>Want a person to pressure-test this shortlist?</p>
+          <a class="button" href="https://flexiple.com/gcc" target="_blank" rel="noopener">Talk to Flexiple about this plan</a>
+        </div>
+      </section>
+
+      <section role="tabpanel" id="panel-incentives" aria-labelledby="tab-incentives" class="panel" hidden>
+        <div class="panel-head">
+          <p class="panel-intro">Every state writes its incentives differently. Here they are in one format, with an estimate for <strong id="incTeam"></strong>.</p>
+          <label class="inline-field">
+            <span>Salaries from</span>
+            <select id="benchCity"></select>
+          </label>
+        </div>
+        <div id="incentives" class="policies"></div>
+        <p class="footnote">Estimates cover payroll-, EPF- and rent-linked support only, before tax, and assume your centre qualifies. Capital subsidies depend on what you build and are listed but not added. Always confirm with the state's nodal agency.</p>
+      </section>
+
+      <section role="tabpanel" id="panel-pipeline" aria-labelledby="tab-pipeline" class="panel" hidden>
+        <div class="panel-head">
+          <p class="panel-intro" id="pipeIntro"></p>
+          <div class="filters">
+            <label class="inline-field"><span>Sector</span><select id="pipeSector"></select></label>
+            <label class="inline-field"><span>City</span><select id="pipeCity"></select></label>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th scope="col">Company</th><th scope="col">City</th><th scope="col">Size</th><th scope="col">Stage</th><th scope="col">When</th><th scope="col">Setup partner</th><th scope="col"><span class="sr">Source</span></th></tr></thead>
+            <tbody id="pipeline"></tbody>
+          </table>
+        </div>
+        <p class="footnote">A sample of announcements traced to a company statement or named publication, not a census. Flexiple's own directory tracks 48 new centres since January 2025.</p>
+      </section>
+
+      <section role="tabpanel" id="panel-providers" aria-labelledby="tab-providers" class="panel" hidden>
+        <p class="panel-intro">What each setup firm says about itself, next to the GCC clients independent press has named. No ratings: nobody publishes delivery outcomes yet.</p>
+        <div id="providers" class="providers"></div>
+        <p class="footnote">Finding no named client doesn't mean a firm delivers badly. It means a buyer can't check. Analyst rankings exist (Everest Group assesses 32 setup providers) but are members-only and draw partly on what providers submit. <a id="everestLink" target="_blank" rel="noopener">Everest Group</a></p>
+      </section>
+
+      <section role="tabpanel" id="panel-about" aria-labelledby="tab-about" class="panel" hidden>
+        <h2 class="about-title">How many GCCs does India have? It depends who you ask.</h2>
+        <div class="counts" id="counts"></div>
+        <p class="about-copy">That disagreement is the reason this tool exists. Each source counts something slightly different, and none shows its working. GCC Compass takes the opposite approach: every figure links to the page it came from, and anything we could not confirm against a primary page carries a <span class="flag">Verify</span> flag.</p>
+
+        <h3>How it was built</h3>
+        <p class="about-copy">Figures were gathered and structured with Claude (Anthropic) from public reports, state policy documents and press releases, then reviewed by hand. Salary medians and centre counts come from Flexiple's own talent data. Office rents come from CRE Matrix's Q1 2026 Grade A survey. Sector strengths per city come from JLL. State incentives come from official pages where reachable, otherwise from tax-firm summaries of the notified policy.</p>
+
+        <h3>Known gaps</h3>
+        <ul class="about-list">
+          <li>Salaries are software-engineer medians. Finance, operations and R&D roles pay differently.</li>
+          <li>Rent is a city-wide Grade A average; micro-markets vary widely.</li>
+          <li>Tier-2 cities appear under Incentives only. Comparable pay and rent data for them isn't published.</li>
+          <li>The pipeline and provider lists are samples to prove the method, not complete registers.</li>
+        </ul>
+
+        <h3>Figures to verify</h3>
+        <ul class="about-list" id="verifyList"></ul>
+
+        <h3>All sources</h3>
+        <ol class="sources" id="sources"></ol>
+      </section>
+    </main>
+  </div>
+
+  <footer class="wrap foot">
+    <p>Built by Ragul for Flexiple, October 2026. Code and data: <a href="https://github.com/MersalArasan99/gcc-entry-expansion-india">GitHub</a>.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
